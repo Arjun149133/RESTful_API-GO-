@@ -1,11 +1,10 @@
 package main
 
 import (
+	"example/restapi/internal/api"
 	"example/restapi/internal/config"
 	"example/restapi/internal/database"
 	"log"
-
-	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -13,17 +12,12 @@ func main() {
 
 	db, err := database.Connect(cfg.DatabaseURL)
 	if err != nil {
-		log.Fatal("Database Connection error: ", err)
+		log.Fatal("Database Connection error: %v", err)
 	}
 	d, _ := db.DB()
 	defer d.Close()
-	r := gin.Default()
 
-	r.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(200, gin.H{
-			"msg": "Hello",
-		})
-	})
+	r := api.SetUpRouter(db)
 
 	log.Println("Server running on", cfg.ServerAddress)
 	if err := r.Run(); err != nil {
