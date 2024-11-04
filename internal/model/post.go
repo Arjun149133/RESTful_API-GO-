@@ -6,6 +6,7 @@ import (
 
 type Post struct {
 	gorm.Model
+	// ID      uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4()" json:"id"`
 	Title   string `json:"title"`
 	Content string `json:"content"`
 	Upvotes int32  `json:"upvotes"`
