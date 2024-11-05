@@ -16,9 +16,10 @@ func Connect(databaseURL string) (*gorm.DB, error) {
 	}
 	DB = db
 
-	// model.MigrateAuthor(db)
+	model.MigrateAuthor(db)
 	model.MigratePost(db)
-	// model.MigrateComment(db)
+	model.MigrateComment(db)
+	model.MigrateTemp(db)
 
 	return db, nil
 }

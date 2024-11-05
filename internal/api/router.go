@@ -16,11 +16,38 @@ func SetUpRouter(db *gorm.DB) *gin.Engine {
 	postService := &service.PostService{Repo: postRepo}
 	postHandler := &handler.PostHandler{Service: *postService}
 
+	authorRepo := &postgres.AuthorRepo{DB: db}
+	authorService := &service.AuthorService{Repo: authorRepo}
+	authorHandler := &handler.AuthorHandler{Service: *authorService}
+
 	r.POST("/posts", postHandler.CreatePost)
 	r.GET("/posts", postHandler.GetAllPosts)
 	r.GET("/posts/:postId", postHandler.GetPostById)
 	r.PUT("/posts/:postId", postHandler.UpdatePost)
 	r.DELETE("/posts/:postId", postHandler.DeletePost)
+
+	r.POST("/authors", authorHandler.CreateAuthor)
+	r.GET("/authors", authorHandler.GetAllAuthors)
+	r.GET("/authors/:authorId", authorHandler.GetAuthorById)
+	r.PUT("/authors/:authorId", authorHandler.UpdateAuthor)
+	r.DELETE("/authors/:authorId", authorHandler.DeleteAuthor)
+
+	// r.POST("/temp", func(c *gin.Context) {
+	// 	var temp model.Temp
+	// 	if err := c.ShouldBindJSON(&temp); err != nil {
+	// 		c.JSON(http.StatusBadRequest, gin.H{
+	// 			"error": err,
+	// 		})
+	// 		return
+	// 	}
+
+	// 	if err := db.Create(temp).Error; err != nil {
+	// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+	// 		return
+	// 	}
+
+	// 	c.JSON(http.StatusOK, temp)
+	// })
 
 	return r
 }

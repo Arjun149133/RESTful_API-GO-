@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"example/restapi/internal/model"
 	"example/restapi/internal/repository"
 )
@@ -10,6 +11,12 @@ type PostService struct {
 }
 
 func (s *PostService) CreatePost(post *model.Post) error {
+	if post.Title == "" {
+		return errors.New("title cannot be empty")
+	}
+	if post.Content == "" {
+		return errors.New("content cannot be empty")
+	}
 	return s.Repo.Create(post)
 }
 
@@ -22,6 +29,12 @@ func (s *PostService) GetPostById(id uint) (model.Post, error) {
 }
 
 func (s *PostService) UpdatePost(post *model.Post) error {
+	if post.Title == "" {
+		return errors.New("title cannot be empty")
+	}
+	if post.Content == "" {
+		return errors.New("content cannot be empty")
+	}
 	return s.Repo.Update(post)
 }
 

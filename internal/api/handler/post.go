@@ -50,12 +50,14 @@ func (h *PostHandler) GetPostById(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 	post, err := h.Service.GetPostById(uint(id))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	c.JSON(http.StatusOK, post)
@@ -69,6 +71,7 @@ func (h *PostHandler) UpdatePost(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 	var updatedPost model.Post
 	updatedPost.ID = uint(id)
@@ -83,6 +86,7 @@ func (h *PostHandler) UpdatePost(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err": err.Error(),
 		})
+		return
 	}
 
 	c.JSON(http.StatusOK, updatedPost)
@@ -95,14 +99,16 @@ func (h *PostHandler) DeletePost(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 	if err := h.Service.DeletePost(uint(id)); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"msg": "Deleted succesfully",
+		"msg": "Deleted Post succesfully",
 	})
 }

@@ -3,9 +3,9 @@ package model
 import "gorm.io/gorm"
 
 type Author struct {
-	ID       uint      `json: "id"`
-	Name     string    `json: "name"`
-	Email    string    `json: "email" gorm:"unique"`
+	gorm.Model
+	Name     string    `json: "name" gorm:"not null"`
+	Email    string    `gorm:"unique;not null" json: "email"`
 	Posts    []Post    `json: "posts"`
 	Comments []Comment `json: "comments"`
 }
