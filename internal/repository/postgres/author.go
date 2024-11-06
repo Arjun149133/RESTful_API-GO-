@@ -12,10 +12,18 @@ type AuthorRepo struct {
 
 func (a *AuthorRepo) Create(author *model.Author) error {
 	return a.DB.Create(&model.Author{
-		ID:    author.ID,
-		Name:  author.Name,
-		Email: author.Email,
+		ID:       author.ID,
+		Name:     author.Name,
+		Email:    author.Email,
+		Password: author.Password,
 	}).Error
+}
+
+func (a *AuthorRepo) FindAuthor(email string) (*model.Author, error) {
+	var author model.Author
+	err := a.DB.Where("email = ?", email).First(&author).Error
+
+	return &author, err
 }
 
 func (a *AuthorRepo) FindAll() ([]model.Author, error) {

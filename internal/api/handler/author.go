@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthorHandler struct {
@@ -21,12 +22,46 @@ func (h *AuthorHandler) CreateAuthor(c *gin.Context) {
 		return
 	}
 
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(author.Password), bcrypt.DefaultCost)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	author.Password = string(hashedPassword)
+
 	if err := h.Service.CreateAuthor(&author); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, author)
+}
+
+func (h *AuthorHandler) LoginAuthor(c *gin.Context) {
+	var author model.Author
+	if err := c.ShouldBindJSON(&author); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	authorInDB, err := h.Service.LoginAuthor(author.Email)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(authorInDB.Password), []byte(author.Password)); err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "invalid password",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, authorInDB)
 }
 
 func (h *AuthorHandler) GetAllAuthors(c *gin.Context) {

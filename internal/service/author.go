@@ -21,6 +21,11 @@ func (s *AuthorService) CreateAuthor(author *model.Author) error {
 
 	return s.Repo.Create(author)
 }
+
+func (s *AuthorService) LoginAuthor(email string) (*model.Author, error) {
+	return s.Repo.FindAuthor(email)
+}
+
 func (s *AuthorService) GetAllAuthors() ([]model.Author, error) {
 	return s.Repo.FindAll()
 }

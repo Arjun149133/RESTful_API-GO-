@@ -4,6 +4,7 @@ import "example/restapi/internal/model"
 
 type AuthorRepository interface {
 	Create(author *model.Author) error
+	FindAuthor(email string) (*model.Author, error)
 	FindAll() ([]model.Author, error)
 	FindById(id string) (*model.Author, error)
 	Update(author *model.Author) error
