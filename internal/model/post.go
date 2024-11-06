@@ -5,14 +5,13 @@ import (
 )
 
 type Post struct {
-	gorm.Model
-	// ID      uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4()" json:"id"`
+	ID       string    `gorm:"type:uuid;default:uuid_generate_v4();primaryKey" json:"id"`
 	Title    string    `json:"title"`
 	Content  string    `json:"content"`
 	Upvotes  int32     `json:"upvotes"`
-	AuthorID uint      `json: "author_id"`
+	AuthorID string    `json: "author_id"`
 	Author   Author    `gorm: "foreignKey: AuthorID" json: "author"`
-	Comments []Comment `gorm: "embedded" json: "comments"`
+	Comments []Comment `gorm: "foreignKey: PostID" json: "comments"`
 }
 
 func MigratePost(db *gorm.DB) {

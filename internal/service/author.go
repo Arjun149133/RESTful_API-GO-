@@ -17,13 +17,14 @@ func (s *AuthorService) CreateAuthor(author *model.Author) error {
 	if author.Name == "" {
 		return errors.New("name cannot be empty")
 	}
+	author.ID = model.NewUUID()
 
 	return s.Repo.Create(author)
 }
 func (s *AuthorService) GetAllAuthors() ([]model.Author, error) {
 	return s.Repo.FindAll()
 }
-func (s *AuthorService) GetAuthorById(id uint) (model.Author, error) {
+func (s *AuthorService) GetAuthorById(id string) (*model.Author, error) {
 	return s.Repo.FindById(id)
 }
 func (s *AuthorService) UpdateAuthor(author *model.Author) error {
@@ -35,6 +36,6 @@ func (s *AuthorService) UpdateAuthor(author *model.Author) error {
 	}
 	return s.Repo.Update(author)
 }
-func (s *AuthorService) DeleteAuthor(id uint) error {
+func (s *AuthorService) DeleteAuthor(id string) error {
 	return s.Repo.Delete(id)
 }

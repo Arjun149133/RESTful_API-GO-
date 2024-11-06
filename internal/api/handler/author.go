@@ -4,7 +4,6 @@ import (
 	"example/restapi/internal/model"
 	"example/restapi/internal/service"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -45,15 +44,7 @@ func (h *AuthorHandler) GetAllAuthors(c *gin.Context) {
 func (h *AuthorHandler) GetAuthorById(c *gin.Context) {
 	authorId := c.Param("authorId")
 
-	id, err := strconv.ParseUint(authorId, 10, 32)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	author, err := h.Service.GetAuthorById(uint(id))
+	author, err := h.Service.GetAuthorById(authorId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -67,15 +58,9 @@ func (h *AuthorHandler) GetAuthorById(c *gin.Context) {
 func (h *AuthorHandler) UpdateAuthor(c *gin.Context) {
 	authorId := c.Param("authorId")
 
-	id, err := strconv.ParseUint(authorId, 10, 32)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
 	var updatedAuthor model.Author
-	updatedAuthor.ID = uint(id)
+	updatedAuthor.ID = authorId
+
 	if err := c.ShouldBindJSON(&updatedAuthor); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -95,14 +80,8 @@ func (h *AuthorHandler) UpdateAuthor(c *gin.Context) {
 
 func (h *AuthorHandler) DeleteAuthor(c *gin.Context) {
 	authorId := c.Param("authorId")
-	id, err := strconv.ParseUint(authorId, 10, 32)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	if err := h.Service.DeleteAuthor(uint(id)); err != nil {
+
+	if err := h.Service.DeleteAuthor(authorId); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})

@@ -20,6 +20,10 @@ func SetUpRouter(db *gorm.DB) *gin.Engine {
 	authorService := &service.AuthorService{Repo: authorRepo}
 	authorHandler := &handler.AuthorHandler{Service: *authorService}
 
+	commentRepo := &postgres.CommentRepository{DB: db}
+	commentService := &service.CommentService{Repo: commentRepo}
+	commentHandler := &handler.CommentHandler{Service: *commentService}
+
 	r.POST("/posts", postHandler.CreatePost)
 	r.GET("/posts", postHandler.GetAllPosts)
 	r.GET("/posts/:postId", postHandler.GetPostById)
@@ -31,6 +35,12 @@ func SetUpRouter(db *gorm.DB) *gin.Engine {
 	r.GET("/authors/:authorId", authorHandler.GetAuthorById)
 	r.PUT("/authors/:authorId", authorHandler.UpdateAuthor)
 	r.DELETE("/authors/:authorId", authorHandler.DeleteAuthor)
+
+	r.POST("/posts/:postId/comments", commentHandler.CreateComment)
+	r.GET("/posts/:postId/comments", commentHandler.GetAllComments)
+	r.GET("/posts/:postId/comments/:commentId", commentHandler.GetCommentById)
+	r.PUT("/posts/:postId/comments/:commentId", commentHandler.UpdateComment)
+	r.DELETE("/posts/:postId/comments/:commentId", commentHandler.DeleteComment)
 
 	// r.POST("/temp", func(c *gin.Context) {
 	// 	var temp model.Temp

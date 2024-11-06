@@ -4,7 +4,6 @@ import (
 	"example/restapi/internal/model"
 	"example/restapi/internal/service"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -45,14 +44,7 @@ func (h *PostHandler) GetAllPosts(c *gin.Context) {
 func (h *PostHandler) GetPostById(c *gin.Context) {
 	postId := c.Param("postId")
 
-	id, err := strconv.ParseUint(postId, 10, 32)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	post, err := h.Service.GetPostById(uint(id))
+	post, err := h.Service.GetPostById(postId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -66,15 +58,8 @@ func (h *PostHandler) GetPostById(c *gin.Context) {
 func (h *PostHandler) UpdatePost(c *gin.Context) {
 	postId := c.Param("postId")
 
-	id, err := strconv.ParseUint(postId, 10, 32)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
 	var updatedPost model.Post
-	updatedPost.ID = uint(id)
+	updatedPost.ID = postId
 	if err := c.ShouldBindJSON(&updatedPost); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -94,14 +79,8 @@ func (h *PostHandler) UpdatePost(c *gin.Context) {
 
 func (h *PostHandler) DeletePost(c *gin.Context) {
 	postId := c.Param("postId")
-	id, err := strconv.ParseUint(postId, 10, 32)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	if err := h.Service.DeletePost(uint(id)); err != nil {
+
+	if err := h.Service.DeletePost(postId); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
