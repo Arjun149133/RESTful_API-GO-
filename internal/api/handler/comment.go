@@ -4,6 +4,7 @@ import (
 	"example/restapi/internal/model"
 	"example/restapi/internal/service"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -81,8 +82,13 @@ func (h *CommentHandler) UpdateComment(c *gin.Context) {
 
 func (h *CommentHandler) DeleteComment(c *gin.Context) {
 	commentId := c.Param("commentId")
+	id, err := strconv.ParseUint(commentId, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	if err := h.Service.DeleteComment(commentId); err != nil {
+	if err := h.Service.DeleteComment(uint(id)); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

@@ -47,5 +47,5 @@ func (a *AuthorRepo) Update(author *model.Author) error {
 }
 
 func (a *AuthorRepo) Delete(id string) error {
-	return a.DB.Delete(&model.Author{}, id).Error
+	return a.DB.Delete(&model.Author{}, "id = ?", id).Error
 }

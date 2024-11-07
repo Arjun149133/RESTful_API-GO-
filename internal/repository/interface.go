@@ -24,5 +24,5 @@ type CommentRepository interface {
 	FindAll(id string) ([]model.Comment, error)
 	FindById(postId string) (model.Comment, error)
 	Update(comment *model.Comment, postId string) error
-	Delete(id string) error
+	Delete(id uint) error
 }

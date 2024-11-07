@@ -5,7 +5,7 @@ import (
 )
 
 type Comment struct {
-	ID       string `gorm:"type:uuid;default:uuid_generate_v4();primaryKey" json:"id"`
+	gorm.Model
 	Content  string `json: "comment"`
 	Likes    int32  `json: "likes"`
 	PostID   string `json:"post_id"`

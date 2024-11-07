@@ -43,5 +43,5 @@ func (p *PostRepo) Update(post *model.Post) error {
 }
 
 func (p *PostRepo) Delete(id string) error {
-	return p.DB.Delete(&model.Post{}, id).Error
+	return p.DB.Delete(&model.Post{}, "id = ?", id).Error
 }

@@ -17,7 +17,6 @@ func (s *CommentService) CreateComment(comment *model.Comment) error {
 	if comment.PostID == "" {
 		return errors.New("post_id cannot be empty")
 	}
-	comment.ID = model.NewUUID()
 	return s.Repo.Create(comment)
 }
 
@@ -39,6 +38,6 @@ func (s *CommentService) UpdateComment(comment *model.Comment, postId string) er
 	return s.Repo.Update(comment, postId)
 }
 
-func (s *CommentService) DeleteComment(id string) error {
+func (s *CommentService) DeleteComment(id uint) error {
 	return s.Repo.Delete(id)
 }

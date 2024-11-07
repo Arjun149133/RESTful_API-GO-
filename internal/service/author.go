@@ -17,6 +17,9 @@ func (s *AuthorService) CreateAuthor(author *model.Author) error {
 	if author.Name == "" {
 		return errors.New("name cannot be empty")
 	}
+	if author.Password == "" {
+		return errors.New("password cannot be empty")
+	}
 	author.ID = model.NewUUID()
 
 	return s.Repo.Create(author)

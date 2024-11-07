@@ -1,11 +1,13 @@
 package handler
 
 import (
+	"example/restapi/internal/config"
 	"example/restapi/internal/model"
 	"example/restapi/internal/service"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -15,9 +17,16 @@ type AuthorHandler struct {
 
 func (h *AuthorHandler) CreateAuthor(c *gin.Context) {
 	var author model.Author
-	if err := c.ShouldBindJSON(&author); err != nil {
+	err := c.ShouldBindJSON(&author)
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
+		})
+		return
+	}
+	if author.Password == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "password cannot be empty",
 		})
 		return
 	}
@@ -60,8 +69,25 @@ func (h *AuthorHandler) LoginAuthor(c *gin.Context) {
 		})
 		return
 	}
+	cfg := config.Load()
 
-	c.JSON(http.StatusOK, authorInDB)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"email": authorInDB.Email,
+		"name":  authorInDB.Name,
+	})
+
+	// Sign and get the complete encoded token as a string using the secret
+	accessToken, err := token.SignedString([]byte(cfg.JWTSecret))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"access_token": accessToken,
+	})
 }
 
 func (h *AuthorHandler) GetAllAuthors(c *gin.Context) {
