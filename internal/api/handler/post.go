@@ -14,6 +14,13 @@ type PostHandler struct {
 
 func (h *PostHandler) CreatePost(c *gin.Context) {
 	var post model.Post
+	author, exists := c.Get("Author")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+	post.AuthorID = author.(map[string]interface{})["authorID"].(string)
+
 	if err := c.ShouldBindJSON(&post); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),

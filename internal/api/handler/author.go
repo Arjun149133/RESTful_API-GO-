@@ -72,8 +72,9 @@ func (h *AuthorHandler) LoginAuthor(c *gin.Context) {
 	cfg := config.Load()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"email": authorInDB.Email,
-		"name":  authorInDB.Name,
+		"authorID": authorInDB.ID,
+		"email":    authorInDB.Email,
+		"name":     authorInDB.Name,
 	})
 
 	// Sign and get the complete encoded token as a string using the secret

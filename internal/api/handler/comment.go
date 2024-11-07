@@ -18,6 +18,13 @@ func (h *CommentHandler) CreateComment(c *gin.Context) {
 	var comment model.Comment
 
 	comment.PostID = postId
+	author, exists := c.Get("Author")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+	comment.AuthorID = author.(map[string]interface{})["authorID"].(string)
+
 	if err := c.ShouldBindJSON(&comment); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
